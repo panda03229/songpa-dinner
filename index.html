@@ -71,6 +71,15 @@ header p{margin:0;color:var(--muted);font-size:14px}
 .wait.res{background:var(--w-res-bg);color:var(--w-res)}
 .wait.unk{background:var(--bg);color:var(--muted)}
 .desc{font-size:14px}
+.sun{font-size:13px;font-variant-numeric:tabular-nums}
+.sun .lo{color:var(--w-long);font-weight:700}
+.apps{display:flex;flex-wrap:wrap;gap:6px}
+.chip{font-size:12px;font-weight:700;border-radius:6px;padding:2px 8px;text-decoration:none;display:inline-block}
+.chip.ct{background:#fff1e6;color:#c2410c;border:1px solid #fbd5b5}
+.chip.tb{background:#ffe9ec;color:#be123c;border:1px solid #fbc7cf}
+.chip.no{background:var(--bg);color:var(--muted);border:1px solid var(--line);font-weight:500}
+.card.closed{opacity:.55}
+.card.closed .ph::after{content:"일요일 휴무";position:absolute;inset:0;display:grid;place-items:center;background:rgba(0,0,0,.45);color:#fff;font-weight:700;font-size:18px}
 .links{display:flex;gap:8px;margin-top:4px;flex-wrap:wrap}
 .link{font-size:13px;color:var(--accent);text-decoration:none;border:1px solid var(--line);border-radius:8px;padding:3px 10px}
 .empty{color:var(--muted);text-align:center;margin-top:40px}
@@ -87,14 +96,15 @@ header p{margin:0;color:var(--muted);font-size:14px}
 <div class="wrap">
   <header>
     <h1>이번 주말, 뭐 먹을까? 🐟</h1>
-    <p>올림픽공원 공연 끝나고(8시쯤) 잠실새내 숙소로 가는 길. 먹고 싶은 곳에 <b>♡ 찜</b> 눌러서 보내줘!</p>
+    <p>11월 22일 일요일, 올림픽공원 공연 끝나고(8시쯤) 잠실새내 숙소로 가는 길. 먹고 싶은 곳에 <b>♡ 찜</b> 눌러서 보내줘!</p>
     <div class="hint"><span>🐟 방어 메뉴 확인</span><span>💛 네가 가고 싶다던 곳</span><span>📎 보내준 링크</span></div>
     <div class="tip">
-      <b>토요일 8시 웨이팅 팁</b>
+      <b>일요일 8시 작전</b>
       <ul>
-        <li>공연 끝나는 시간엔 올림픽공원 바로 옆 방이 먹자골목이 제일 붐빌 가능성이 커. 숙소 쪽 잠실새내로 넘어가면 조금 나을 수 있어.</li>
-        <li>캐치테이블·테이블링 원격 줄서기가 되는 곳은 공연 끝나기 전에 미리 걸어두기.</li>
-        <li>웨이팅 표시는 인터넷 후기에서 찾은 것만 적었어. ‘정보 없음’이 웨이팅 없다는 뜻은 아니야.</li>
+        <li><b>키요미는 캐치테이블에서 일요일 예약이 아직 열려 있어</b> (토요일은 마감). 고르면 바로 예약하자!</li>
+        <li><span class="chip ct">캐치테이블</span> <span class="chip tb">테이블링</span> 표시가 있는 곳은 공연 끝나기 전에 앱으로 원격 줄서기를 걸어둘 수 있어.</li>
+        <li>일요일 휴무인 곳(울랄라횟집·탄포포·이카리·코코로·조용)은 기본으로 숨겨뒀어.</li>
+        <li>라스트오더가 8시 반~9시인 곳은 ⏰ 표시. 공연 끝나고 가면 빠듯해.</li>
       </ul>
     </div>
   </header>
@@ -172,6 +182,40 @@ const D = [
   {n:"누나지트", p:"누나지트", k:131838669, st:"far", c:"이자카야", user:true, r:"네이버 방문자 리뷰 13", w:["unk"], d:"파스타 요리주점. 차돌 깻잎 파스타가 시그니처고 콜키지 프리. 강동구청역 쪽이라 제일 멀어.", naver:"https://naver.me/F6QCnoFA", q:"누나지트 강동"}
 ];
 
+// 11/22(일) 영업시간(카카오맵) + 앱 현황(캐치테이블·테이블링, 11/18 확인). lo=라스트오더 빠듯
+const SUN={
+ "키요미 이자카야":{h:"17:00~01:00",a:[["ct","일요일 예약 가능"]]},
+ "보길":{h:"11:00~22:00 · 라스트오더 20:30",lo:1,a:[]},
+ "청춘종합어시장 방이점":{h:"15:30~02:30",a:[]},
+ "이카리":{x:1},"코코로":{x:1},"울랄라횟집":{x:1},"탄포포":{x:1},"조용":{x:1},
+ "요즈음 잠실방이점":{h:"17:00~00:30",a:[]},
+ "덮밥집 난제":{h:"11:30~21:00",lo:1,a:[["tb","원격줄서기"]]},
+ "토오코":{h:"11:30~21:30 · 라스트오더 21:00",lo:1,a:[]},
+ "비스트로 방이":{h:"11:30~22:00",a:[]},
+ "송돝":{h:"11:00~23:30",a:[["ct","원격 웨이팅"],["ct","일 예약 마감"]]},
+ "화반 방이점":{h:"11:30~01:00",a:[["ct","일요일 예약 가능"],["ct","원격 웨이팅"]]},
+ "호랑이굴":{h:"11:30~24:00",a:[["tb","원격줄서기"]]},
+ "조개진":{h:"10:00~22:00",a:[["tb","빈자리 알림"]]},
+ "안목":{h:"09:00~01:00",a:[["ct","원격 웨이팅"]]},
+ "태풍수산1997":{h:"11:00~03:00",a:[["tb","원격줄서기"]]},
+ "다이키":{h:"17:00~24:00",a:[]},
+ "화심":{h:"17:00~04:00",a:[["ct","일요일 예약 가능"]]},
+ "칸코시":{h:"16:30~02:00",a:[]},
+ "토우지":{h:"17:00~24:00",a:[["ct","일요일 예약 가능"]]},
+ "88조개":{h:"12:00~24:00",a:[]},
+ "잠실1술영장":{h:"11:00~02:00",a:[]},
+ "훈지":{h:"11:00~21:00",lo:1,a:[]},
+ "돈순장":{h:"12:00~23:30",a:[["ct","일요일 예약 가능"],["ct","원격 웨이팅"]]},
+ "후발대":{h:"17:00~24:00",a:[]},
+ "잠실한우정육식당":{h:"12:00~23:00",a:[]},
+ "대성정육식당":{h:"11:00~22:30 · 라스트오더 21:40",a:[["ct","일요일 예약 가능"]]},
+ "세이류":{h:"12:00~21:30",a:[["ct","예약제"]]},
+ "김태완스시 송파본점":{h:"10:30~22:00 · 라스트오더 21:30",a:[]},
+ "누나지트":{h:"영업시간 정보 없음",a:[]}
+};
+const CTU=q=>"https://app.catchtable.co.kr/ct/map/search-map?serviceType=INTEGRATION&keyword="+encodeURIComponent(q)+"&keywordSearch="+encodeURIComponent(q);
+const TBU=q=>"https://www.tabling.co.kr/search?keyword="+encodeURIComponent(q);
+let hideClosed=true;
 let st="all", cat="all", bangOnly=false;
 let picks=new Set();
 try{ picks=new Set(JSON.parse(localStorage.getItem("songpa-picks")||"[]")) }catch(e){}
@@ -188,11 +232,12 @@ function renderControls(){
   STATIONS.forEach(x=>s.append(btn(x.name, st===x.id, ()=>{st=x.id;render()})));
   const c=document.getElementById("cats"); c.innerHTML="";
   c.append(btn("🐟 방어 있는 곳만", bangOnly, ()=>{bangOnly=!bangOnly;render()}));
+  c.append(btn("일요일 휴무 숨김", hideClosed, ()=>{hideClosed=!hideClosed;render()}));
   c.append(btn("모든 종류", cat==="all", ()=>{cat="all";render()}));
   CATS.forEach(x=>c.append(btn(x, cat===x, ()=>{cat=x;render()})));
 }
 function card(x){
-  const el=document.createElement("article"); el.className="card"+(picks.has(x.n)?" picked":"");
+  const el=document.createElement("article"); el.className="card"+(picks.has(x.n)?" picked":"")+((SUN[x.n]||{}).x?" closed":"");
   const tags=(x.gf?'<span class="tag gf">💛 가고 싶다던 곳</span>':'')+(x.bang?'<span class="tag b">🐟 방어</span>':'')+(x.user&&!x.gf?'<span class="tag u">📎 보내준 곳</span>':'');
   const [lab,cls]=W[x.w[0]]; const wnote=x.w[1]?` · ${esc(x.w[1])}`:"";
   const rs=x.r.split(" · ");
@@ -201,6 +246,10 @@ function card(x){
     <div class="body">
       <div class="name">${esc(x.n)}${tags}</div>
       <div class="meta"><b>${esc(rs[0])}</b>${rs.length>1?" · "+esc(rs.slice(1).join(" · ")):""}</div>
+      ${(()=>{const s=SUN[x.n]||{};if(s.x)return '<div class="sun"><b>일요일 휴무</b></div>';
+        const short=x.n.split(" ")[0];
+        const apps=(s.a||[]).map(([k,t])=>`<a class="chip ${k}" href="${k==="ct"?CTU(short):TBU(short)}" target="_blank" rel="noopener">${k==="ct"?"캐치테이블":"테이블링"} · ${t}</a>`).join("")||'<span class="chip no">캐치테이블·테이블링 없음 (현장 대기)</span>';
+        return `<div class="sun">일 11/22 · <span class="${s.lo?"lo":""}">${s.lo?"⏰ ":""}${s.h||"-"}</span></div><div class="apps">${apps}</div>`})()}
       <div class="wait ${cls}"><strong>${lab}</strong><span>${wnote.replace(/^ · /,"")}</span></div>
       <div class="desc">${esc(x.d)}</div>
       <div class="links">
@@ -219,7 +268,7 @@ function render(){
   renderControls();
   const out=document.getElementById("out"); out.innerHTML=""; let any=false;
   STATIONS.filter(s=>st==="all"||s.id===st).forEach(s=>{
-    const items=D.filter(x=>x.st===s.id&&(cat==="all"||x.c===cat)&&(!bangOnly||x.bang));
+    const items=D.filter(x=>x.st===s.id&&(cat==="all"||x.c===cat)&&(!bangOnly||x.bang)&&!(hideClosed&&(SUN[x.n]||{}).x));
     if(!items.length) return; any=true;
     const sec=document.createElement("section"); sec.className="st";
     sec.innerHTML=`<h2>${s.name} <small>${s.sub}</small></h2>`;
