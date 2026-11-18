@@ -1,0 +1,246 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="referrer" content="no-referrer">
+<title>송파 저녁 고르기</title>
+<meta property="og:title" content="이번 주말, 뭐 먹을까? 🐟">
+<meta property="og:description" content="공연 끝나고 잠실새내·방이 저녁 후보. 찜해서 보내줘!">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@700&family=Noto+Sans+KR:wght@400;500;700&display=swap">
+<style>
+/* Layout: 역 탭 + 종류 칩 고정, 아래로 역 → 종류 순서 사진 카드, 하단 고정 찜 바 */
+:root{
+  --bg:#f6f4ef; --card:#ffffff; --ink:#1d2330; --muted:#6b6f7a; --line:#e3dfd6;
+  --accent:#1f4e79; --accent-soft:#e3ecf5; --pick:#c2410c; --pick-soft:#fdeee5; --gold:#a16207;
+  --w-long:#b91c1c; --w-long-bg:#fde8e8; --w-mid:#a16207; --w-mid-bg:#fdf3dc; --w-low:#15803d; --w-low-bg:#e3f5e8; --w-res:#6d28d9; --w-res-bg:#efe7fd;
+  --display:"Gowun Batang", "Noto Serif KR", serif;
+  --body:"Noto Sans KR", system-ui, -apple-system, "Apple SD Gothic Neo", sans-serif;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){:root{
+  --bg:#14171d; --card:#1c2029; --ink:#e9e7e2; --muted:#9aa0ab; --line:#2c313c;
+  --accent:#8db8e3; --accent-soft:#1f2b3a; --pick:#fb923c; --pick-soft:#3a2418; --gold:#e3b341;
+  --w-long:#f87171; --w-long-bg:#3a1c1c; --w-mid:#e3b341; --w-mid-bg:#352b14; --w-low:#4ade80; --w-low-bg:#16301f; --w-res:#c4b5fd; --w-res-bg:#2a2140;
+  color-scheme:dark }}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.55}
+img{max-width:100%}
+.wrap{max-width:760px;margin:0 auto;padding-block:calc(28px + env(safe-area-inset-top,0px)) 130px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+header h1{font-family:var(--display);font-size:clamp(26px,6vw,36px);margin:0 0 6px;text-wrap:balance;letter-spacing:-.01em}
+header p{margin:0;color:var(--muted);font-size:14px}
+.hint{margin-top:14px;display:flex;flex-wrap:wrap;gap:8px;font-size:13px;color:var(--muted)}
+.hint span{background:var(--card);border:1px solid var(--line);border-radius:999px;padding:3px 10px}
+.tip{margin-top:16px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 14px;font-size:14px}
+.tip b{color:var(--pick)}
+.tip ul{margin:6px 0 0;padding-left:18px}
+.controls{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);padding-block:14px 10px;margin-top:18px;display:grid;gap:10px;border-bottom:1px solid var(--line)}
+.row{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}
+.row::-webkit-scrollbar{display:none}
+.btn{flex:none;font:inherit;font-size:14px;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;padding:6px 13px;cursor:pointer;white-space:nowrap}
+.btn[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--bg);font-weight:700}
+.btn:focus-visible,.heart:focus-visible,.link:focus-visible{outline:2px solid var(--pick);outline-offset:2px}
+.st{margin-top:30px}
+.st h2{font-family:var(--display);font-size:22px;margin:0 0 2px;display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.st h2 small{font-family:var(--body);font-size:13px;color:var(--muted);font-weight:400}
+.cat{margin-top:16px}
+.cat h3{font-size:12px;letter-spacing:.08em;color:var(--muted);margin:0 0 8px;font-weight:700}
+.list{display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(min(100%,330px),1fr))}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden;display:flex;flex-direction:column}
+.card.picked{border-color:var(--pick);box-shadow:0 0 0 1px var(--pick) inset}
+.ph{position:relative;aspect-ratio:16/10;background:var(--line);max-width:100%}
+.ph img{width:100%;height:100%;object-fit:cover;display:block}
+.ph .noimg{position:absolute;inset:0;display:grid;place-items:center;color:var(--muted);font-size:13px}
+.heart{position:absolute;top:10px;right:10px;border:0;background:rgba(255,255,255,.92);color:#333;border-radius:999px;font:inherit;font-size:13px;font-weight:700;padding:6px 12px;cursor:pointer;box-shadow:0 1px 4px rgba(0,0,0,.18)}
+.heart[aria-pressed="true"]{background:var(--pick);color:#fff}
+.body{padding:12px 14px 14px;display:grid;gap:5px;min-width:0}
+.name{font-weight:700;font-size:17px;display:flex;flex-wrap:wrap;align-items:center;gap:6px}
+.tag{font-size:11.5px;font-weight:700;border-radius:6px;padding:1px 7px}
+.tag.b{background:var(--accent-soft);color:var(--accent)}
+.tag.gf{background:var(--pick-soft);color:var(--pick)}
+.tag.u{background:var(--line);color:var(--ink)}
+.meta{font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums}
+.meta b{color:var(--gold)}
+.wait{font-size:13px;border-radius:8px;padding:5px 9px;display:flex;gap:6px;align-items:baseline}
+.wait strong{flex:none}
+.wait.long{background:var(--w-long-bg);color:var(--w-long)}
+.wait.mid{background:var(--w-mid-bg);color:var(--w-mid)}
+.wait.low{background:var(--w-low-bg);color:var(--w-low)}
+.wait.res{background:var(--w-res-bg);color:var(--w-res)}
+.wait.unk{background:var(--bg);color:var(--muted)}
+.desc{font-size:14px}
+.links{display:flex;gap:8px;margin-top:4px;flex-wrap:wrap}
+.link{font-size:13px;color:var(--accent);text-decoration:none;border:1px solid var(--line);border-radius:8px;padding:3px 10px}
+.empty{color:var(--muted);text-align:center;margin-top:40px}
+.bar{position:fixed;left:0;right:0;bottom:0;z-index:6;background:var(--card);border-top:1px solid var(--line);padding-block:12px calc(12px + env(safe-area-inset-bottom,0px));padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.bar .in{max-width:760px;margin:0 auto;display:flex;gap:10px;align-items:center}
+.bar .sum{flex:1;min-width:0;font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bar button{font:inherit;font-weight:700;border:0;border-radius:10px;padding:10px 16px;background:var(--pick);color:#fff;cursor:pointer}
+.bar button:disabled{opacity:.4;cursor:default}
+.foot{margin-top:40px;font-size:12px;color:var(--muted)}
+#copybox{width:100%;max-width:760px;display:block;margin:8px auto 0;font:inherit;font-size:13px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>이번 주말, 뭐 먹을까? 🐟</h1>
+    <p>올림픽공원 공연 끝나고(8시쯤) 잠실새내 숙소로 가는 길. 먹고 싶은 곳에 <b>♡ 찜</b> 눌러서 보내줘!</p>
+    <div class="hint"><span>🐟 방어 메뉴 확인</span><span>💛 네가 가고 싶다던 곳</span><span>📎 보내준 링크</span></div>
+    <div class="tip">
+      <b>토요일 8시 웨이팅 팁</b>
+      <ul>
+        <li>공연 끝나는 시간엔 올림픽공원 바로 옆 방이 먹자골목이 제일 붐빌 가능성이 커. 숙소 쪽 잠실새내로 넘어가면 조금 나을 수 있어.</li>
+        <li>캐치테이블·테이블링 원격 줄서기가 되는 곳은 공연 끝나기 전에 미리 걸어두기.</li>
+        <li>웨이팅 표시는 인터넷 후기에서 찾은 것만 적었어. ‘정보 없음’이 웨이팅 없다는 뜻은 아니야.</li>
+      </ul>
+    </div>
+  </header>
+
+  <div class="controls" role="region" aria-label="필터">
+    <div class="row" id="stations" role="group" aria-label="역"></div>
+    <div class="row" id="cats" role="group" aria-label="종류"></div>
+  </div>
+
+  <main id="out"></main>
+
+  <p class="foot">별점: 네이버(방문자 별점) 또는 카카오맵, 사진: 카카오맵 리뷰 사진. 2026년 11월 18일 확인. 영업시간·라스트오더는 가기 전에 한 번 더 확인하기.</p>
+</div>
+
+<div class="bar"><div class="in">
+  <div class="sum" id="sum">아직 찜한 곳 없음</div>
+  <button id="copy" type="button" disabled>찜 목록 복사</button>
+</div></div>
+
+<script>
+const PHOTOS={"키요미":"https://img1.kakaocdn.net/cthumb/local/C640x400.q50/?fname=http%3A%2F%2Ft1.kakaocdn.net%2Flocal%2FkakaomapPhoto%2Freview%2F41958fe09573382a21d38e9ad44b702c3fa6ccf2%3Foriginal","보길":"https://img1.kakaocdn.net/cthumb/local/C640x400.q50/?fname=http%3A%2F%2Ft1.kakaocdn.net%2Fmystore%2F7644A4377EA94DBB9C4085A00029DFB1","청춘종합어시장":"https://img1.kakaocdn.net/cthumb/local/C640x400.q50/?fname=http%3A%2F%2Ft1.kakaocdn.net%2Flocal%2FkakaomapPhoto%2Freview%2F1eea5d71188ea672397761ef019e73072490113f%3Foriginal","이카리":"https://img1.kakaocdn.net/cthumb/local/C640x400.q50/?fname=http%3A%2F%2Ft1.kakaocdn.net%2Flocal%2FkakaomapPhoto%2Freview%2F6938c370c25c84958d3d8726b1d5329b1431dd71%3Foriginal","요즈음":"https://img1.kakaocdn.net/cthumb/local/C640x400.q50/?fname=http%3A%2F%2Ft1.kakaocdn.net%2Fmystore%2FF7002A07AA074BD387BB4BF744473B2E","코코로":"https://img1.kakaocdn.net/cthumb/local/C640x400.q50/?fname=http%3A%2F%2Ft1.kakaocdn.net%2Fmystore%2F49A18CCC301D49EF91CDCD42C6D15517","난제":"https://img1.kakaocdn.net/cthumb/local/C640x400.q50/?fname=http%3A%2F%2Ft1.kakaocdn.net%2Fmystore%2F0A5DF702548A4860976AD9D7B2595B06","토오코":"https://img1.kakaocdn.net/cthumb/local/C640x400.q50/?fname=http%3A%2F%2Ft1.kakaocdn.net%2Fmystore%2FC21CCD5898EF4FDDA8A9581D41FDFD6C","비스트로방이":"https://img1.kakaocdn.net/cthumb/local/C640x400.q50/?fname=http%3A%2F%2Ft1.kakaocdn.net%2Fmystore%2F205CCC94636E45C894E27ADF19D23ABD","송돝":"https://img1.kakaocdn.net/cthumb/local/C640x400.q50/?fname=http%3A%2F%2Ft1.kakaocdn.net%2Flocal%2FkakaomapPhoto%2Freview%2Fad44e04268e776833fe94b766fbcd69386759c8890f949ad78d256d6e29ba2bb","화반":"https://img1.kakaocdn.net/cthumb/local/C640x400.q50/?fname=http%3A%2F%2Ft1.kakaocdn.net%2Fmystore%2FF81E116CBDDF440CB1622FCFA81AF562","호랑이굴":"https://img1.kakaocdn.net/cthumb/local/C640x400.q50/?fname=http%3A%2F%2Ft1.kakaocdn.net%2Fmystore%2F7C56078F11274FC9A48110ECB8646747","조개진":"https://img1.kakaocdn.net/cthumb/local/C640x400.q50/?fname=http%3A%2F%2Ft1.kakaocdn.net%2Fmystore%2F8BCA562C2CC34526A341C96E7E8F1EA4","안목":"https://img1.kakaocdn.net/cthumb/local/C640x400.q50/?fname=http%3A%2F%2Ft1.kakaocdn.net%2Flocal%2FkakaomapPhoto%2Freview%2Fcf495f6d52693fed6e9b395ec671cdca3d5e8e3e%3Foriginal","울랄라":"https://img1.kakaocdn.net/cthumb/local/C640x400.q50/?fname=http%3A%2F%2Ft1.kakaocdn.net%2Flocal%2FkakaomapPhoto%2Freview%2F6a1014825de3d42e9ededd8a8beafe938581fd9d%3Foriginal","태풍수산":"https://img1.kakaocdn.net/cthumb/local/C640x400.q50/?fname=http%3A%2F%2Ft1.kakaocdn.net%2Flocal%2FkakaomapPhoto%2Freview%2F4ff484bff5e2c7c4d666ca8cecbaa627297f4a8f%3Foriginal","다이키":"https://img1.kakaocdn.net/cthumb/local/C640x400.q50/?fname=http%3A%2F%2Ft1.kakaocdn.net%2Fmystore%2F543C6DC7D0CE48F995D63967B72E8D1E","탄포포":"https://img1.kakaocdn.net/cthumb/local/C640x400.q50/?fname=http%3A%2F%2Ft1.kakaocdn.net%2Flocal%2FkakaomapPhoto%2Freview%2F5f96de5660d39005ce820c811cb2ced605fd6e97%3Foriginal","화심":"https://img1.kakaocdn.net/cthumb/local/C640x400.q50/?fname=http%3A%2F%2Ft1.kakaocdn.net%2Flocal%2FkakaomapPhoto%2Freview%2Ff74e5fb4a88e4f3eee450f67862f5c22f4808b8b%3Foriginal","칸코시":"https://img1.kakaocdn.net/cthumb/local/C640x400.q50/?fname=http%3A%2F%2Ft1.kakaocdn.net%2Flocal%2FkakaomapPhoto%2Freview%2F1dfa6ac8c8a916dfa23404db963ccc449f8ae74a%3Foriginal","토우지":"https://img1.kakaocdn.net/cthumb/local/C640x400.q50/?fname=http%3A%2F%2Ft1.kakaocdn.net%2Flocal%2FkakaomapPhoto%2Freview%2F44eddfa9cefc17f1f9324acd6377d6c13ec2c559%3Foriginal","88조개":"https://img1.kakaocdn.net/cthumb/local/C640x400.q50/?fname=http%3A%2F%2Ft1.kakaocdn.net%2Fmystore%2F91A2C6BCE1CF43C094EC3733BC8961E5","술영장":"https://img1.kakaocdn.net/cthumb/local/C640x400.q50/?fname=http%3A%2F%2Ft1.kakaocdn.net%2Fmystore%2FC5044A8FB22B4034B6E3BE5AF33A807D","돈순장":"https://img1.kakaocdn.net/cthumb/local/C640x400.q50/?fname=http%3A%2F%2Ft1.kakaocdn.net%2Fmystore%2F18332D14FF454114B59F1CBCAE094F8F","후발대":"https://img1.kakaocdn.net/cthumb/local/C640x400.q50/?fname=http%3A%2F%2Ft1.kakaocdn.net%2Flocal%2FkakaomapPhoto%2Freview%2F820310a1e23c476f49ede9be16482badf757a1d9%3Foriginal","잠실한우":"https://img1.kakaocdn.net/cthumb/local/C640x400.q50/?fname=http%3A%2F%2Ft1.kakaocdn.net%2Fmystore%2F26093C9234DB4E6F94B150194BA652EA","대성":"https://img1.kakaocdn.net/cthumb/local/C640x400.q50/?fname=http%3A%2F%2Ft1.kakaocdn.net%2Flocal%2FkakaomapPhoto%2Freview%2Fb7d184bab58a23a2906145cc7b3188c5624975aa%3Foriginal","세이류":"https://img1.kakaocdn.net/cthumb/local/C640x400.q50/?fname=http%3A%2F%2Ft1.kakaocdn.net%2Flocal%2FkakaomapPhoto%2Freview%2F97bd2c593afd2cdf90e521e32d1d04dfbbd6d08f%3Foriginal","훈지":"https://img1.kakaocdn.net/cthumb/local/C640x400.q50/?fname=http%3A%2F%2Ft1.kakaocdn.net%2Ffiy_reboot%2Fplace%2FFAAF90A3943D4316B4B69F09644A6DD8","김태완":"https://img1.kakaocdn.net/cthumb/local/C640x400.q50/?fname=http%3A%2F%2Ft1.kakaocdn.net%2Fmystore%2FDF3782B0A10D415E9EAC88B9A0DA5844","조용":"https://img1.kakaocdn.net/cthumb/local/C640x400.q50/?fname=http%3A%2F%2Ft1.kakaocdn.net%2Fmystore%2F9F9F973338F849CBBB541A0362C0A5A3",};
+
+const STATIONS = [
+  {id:"saenae", name:"잠실새내", sub:"숙소 근처 · 먹고 걸어서 들어가기"},
+  {id:"bangi", name:"방이 · 송파나루", sub:"공연장 바로 남쪽 · 먹자골목"},
+  {id:"jamsil", name:"잠실", sub:"잠실역 · 석촌호수"},
+  {id:"far", name:"조금 더 가면", sub:"방이역 · 오금 · 강동구청"}
+];
+const CATS = ["방어·회","이자카야","카이센동·스시","고기","기타"];
+const K = id => "https://place.map.kakao.com/"+id;
+const NQ = q => "https://map.naver.com/p/search/"+encodeURIComponent(q);
+const W = {
+  long:["긴 웨이팅","long"], mid:["웨이팅 있음","mid"], low:["대기 적음","low"], res:["예약 필수","res"], unk:["웨이팅 정보 없음","unk"]
+};
+
+const D = [
+  // 방이 · 송파나루
+  {n:"키요미 이자카야", p:"키요미", k:1776535277, st:"bangi", c:"이자카야", bang:true, gf:true, user:true, r:"네이버 ★4.92 · 방문자 리뷰 1,297", w:["mid","평일 저녁에도 20분쯤 기다렸다는 후기 있음. 주말 8시면 더 길 수 있어"], d:"뚱땡이 방어, 키요미 모둠 판초밥, 광어묵은지김초밥. ‘데이트 맛집’ 리뷰가 많아.", naver:"https://naver.me/FxCR0pyu", q:"키요미 이자카야 송파"},
+  {n:"보길", p:"보길", k:1895960161, st:"bangi", c:"카이센동·스시", user:true, r:"네이버 ★4.76 · 방문자 리뷰 1,025", w:["unk","브레이크타임 16~17시. 저녁 웨이팅 후기는 못 찾았어"], d:"카이센동, 생연어 덮밥, 전복솥밥, 장어솥밥. 카이센동 칭찬이 제일 많아.", naver:"https://naver.me/Fr7pFRGk", q:"보길 송파"},
+  {n:"청춘종합어시장 방이점", p:"청춘종합어시장", k:431828063, st:"bangi", c:"방어·회", bang:true, r:"카카오 ★4.7 · 79명", w:["unk"], d:"대방어 3만 원, 대방어+모둠회 5만 원. 가성비 방어.", q:"청춘종합어시장 방이점"},
+  {n:"이카리", p:"이카리", k:1667801318, st:"bangi", c:"방어·회", bang:true, r:"카카오 ★4.4 · 리뷰 311", w:["unk"], d:"잿방어 사시미 5.5만 원. 지하에 있는 일식 술집.", q:"이카리 송파"},
+  {n:"요즈음 잠실방이점", p:"요즈음", k:625854661, st:"bangi", c:"이자카야", r:"카카오 ★4.7 · 201명 · 리뷰 529", w:["unk"], d:"9층에 있는 이자카야. 리뷰가 많고 별점도 높아.", q:"요즈음 잠실방이점"},
+  {n:"코코로", p:"코코로", k:16474801, st:"bangi", c:"이자카야", r:"카카오 ★4.5 · 리뷰 165", w:["unk"], d:"방이 먹자골목 안 이자카야.", q:"코코로 방이"},
+  {n:"덮밥집 난제", p:"난제", k:1042521974, st:"bangi", c:"카이센동·스시", r:"카카오 ★4.6 · 리뷰 122", w:["unk"], d:"카이센동 덮밥집. 키요미 바로 옆 골목.", q:"덮밥집 난제"},
+  {n:"토오코", p:"토오코", k:1394423297, st:"bangi", c:"카이센동·스시", r:"카카오 ★4.4 · 75명 · 리뷰 308", w:["unk","저녁 17:00~21:30, 라스트오더 21:00 (일요일 기준 표기)"], d:"사케동 검색에 잡힌 일식집. 키요미랑 같은 골목. 8시 도착이면 라스트오더 빠듯해.", q:"토오코 송파"},
+  {n:"비스트로 방이", p:"비스트로방이", k:927391662, st:"bangi", c:"카이센동·스시", r:"카카오 ★4.7 · 리뷰 434", w:["unk"], d:"초밥·카이센동. 몽촌토성역 쪽.", q:"비스트로 방이"},
+  {n:"송돝", p:"송돝", k:854818061, st:"bangi", c:"고기", r:"카카오 ★4.7 · 264명", w:["unk"], d:"방이동 삼겹살 맛집.", q:"송돝 방이"},
+  {n:"화반 방이점", p:"화반", k:374002462, st:"bangi", c:"고기", r:"카카오 ★4.5 · 240명", w:["unk"], d:"삼겹살.", q:"화반 방이점"},
+  {n:"호랑이굴", p:"호랑이굴", k:1094471587, st:"bangi", c:"기타", r:"카카오 ★4.9 · 450명 · 리뷰 1,145", w:["unk"], d:"모츠나베·전골 술집. 방이동 별점 1위.", q:"호랑이굴 잠실방이점"},
+  {n:"조개진", p:"조개진", k:215998570, st:"bangi", c:"기타", r:"카카오 ★4.8 · 리뷰 440", w:["unk"], d:"조개구이·조개찜.", q:"조개진 송파"},
+  {n:"안목", p:"안목", k:189736915, st:"bangi", c:"기타", r:"카카오 ★4.8 · 620명", w:["mid","‘웨이팅 많아 꽤 기다렸다’는 후기 있음"], d:"돼지국밥. 가볍고 빠르게 먹고 싶을 때.", q:"안목 잠실점"},
+
+  // 잠실새내
+  {n:"울랄라횟집", p:"울랄라", k:281372936, st:"saenae", c:"방어·회", bang:true, r:"카카오 ★4.5 · 리뷰 144", w:["unk"], d:"대방어 소 7만 · 중 10만, 광어+방어 소 6만. 둘이면 소자로 충분해.", q:"울랄라횟집 잠실"},
+  {n:"태풍수산1997", p:"태풍수산", k:21547569, st:"saenae", c:"방어·회", r:"카카오 ★4.7 · 143명", w:["unk"], d:"1~2층으로 넓은 횟집이라 자리는 비교적 여유 있을 듯. 방어 메뉴는 확인 필요.", q:"태풍수산1997"},
+  {n:"다이키", p:"다이키", k:504391622, st:"saenae", c:"이자카야", r:"카카오 ★4.9 · 리뷰 160", w:["unk"], d:"잠실새내 이자카야 중 별점 1위.", q:"다이키 잠실새내"},
+  {n:"탄포포", p:"탄포포", k:1871752626, st:"saenae", c:"이자카야", r:"카카오 ★4.4 · 리뷰 176", w:["long","평일 7시에도 2~3팀 대기, ‘1시간 기다렸다’는 후기. 캐치테이블 예약 후기 있음"], d:"가성비 좋은 이자카야로 유명해. 금태 사시미 칭찬이 많아.", q:"탄포포 잠실"},
+  {n:"화심", p:"화심", k:13147761, st:"saenae", c:"이자카야", r:"카카오 ★4.5 · 60명", w:["unk"], d:"2층에 있는 이자카야.", q:"화심 잠실"},
+  {n:"칸코시", p:"칸코시", k:10021212, st:"saenae", c:"이자카야", r:"카카오 ★4.4 · 36명", w:["unk","예약 가능 표기. 새벽 3시까지 영업한다는 정보 있음"], d:"닭볶음탕(닭찜) 3.2만 원. 인스타 잠실새내 맛집 목록에 있던 곳.", q:"칸코시 잠실"},
+  {n:"토우지", p:"토우지", k:1924341190, st:"saenae", c:"이자카야", r:"카카오 ★4.4 · 리뷰 175", w:["unk"], d:"2층 이자카야.", q:"토우지 잠실"},
+  {n:"88조개", p:"88조개", k:1623422144, st:"saenae", c:"기타", r:"카카오 ★4.9 · 242명", w:["unk"], d:"조개구이·조개찜. 잠실새내 별점 1위.", q:"88조개 잠실새내역본점"},
+  {n:"잠실1술영장", p:"술영장", k:752500765, st:"saenae", c:"기타", r:"카카오 ★4.8 · 134명", w:["unk"], d:"찌개·전골 술집.", q:"잠실1술영장"},
+  {n:"훈지", p:"훈지", k:1014186276, st:"saenae", c:"기타", r:"카카오 ★4.7 · 83명", w:["mid","평일 저녁에도 웨이팅 후기. 카운터석 위주라 회전이 느려"], d:"아부라소바(비빔 라멘) 집. 가볍게 한 그릇.", q:"훈지 잠실"},
+  {n:"돈순장", p:"돈순장", k:627702483, st:"saenae", c:"고기", r:"카카오 ★4.7 · 118명 · 리뷰 599", w:["unk"], d:"돼지고기 구이.", q:"돈순장 잠실새내본점"},
+  {n:"후발대", p:"후발대", k:1747047105, st:"saenae", c:"고기", r:"카카오 ★4.6 · 361명", w:["long","워크인은 못 먹을 확률이 높다는 후기. 인스타 DM 예약 권장, 고기 3인분 이상 주문"], d:"얇은 감자 위에 고기 올려 먹는 집.", q:"후발대 잠실직영점"},
+  {n:"잠실한우정육식당", p:"잠실한우", k:2044345363, st:"saenae", c:"고기", r:"카카오 ★4.6 · 리뷰 224", w:["unk"], d:"한우 정육식당.", q:"잠실한우정육식당"},
+  {n:"대성정육식당", p:"대성", k:12394987, st:"saenae", c:"고기", r:"카카오 ★4.4 · 리뷰 434", w:["unk","예약 가능 표기. 저녁 22:00 전후 마감이라 8시 반엔 빠듯해"], d:"한우. 마무리 된장밥이 유명해. 가게는 허름한 편.", q:"대성정육식당 송파"},
+
+  // 잠실
+  {n:"세이류", p:"세이류", k:2078452841, st:"jamsil", c:"카이센동·스시", r:"카카오 ★4.7 · 69명 · 리뷰 495", w:["res","캐치테이블 예약제. 매달 1일에 다음 달이 열리고 금방 마감돼"], d:"스시 오마카세, 디너 12만 원대. 이번 주말엔 사실상 어려워.", q:"세이류 잠실"},
+
+  // 조금 더
+  {n:"김태완스시 송파본점", p:"김태완", k:856347657, st:"far", c:"카이센동·스시", r:"카카오 ★4.8 · 1,907명 · 리뷰 1,113", w:["unk","예약 가능 표기, 주차 가능"], d:"평가 수가 압도적으로 많은 초밥집. 방이역~오금역 사이.", q:"김태완스시 송파본점"},
+  {n:"조용", p:"조용", k:449931383, st:"far", c:"이자카야", user:true, r:"네이버 방문자 리뷰 238", w:["res","예약하고 가라는 후기. 테이블 4개+다찌라 좁아. 폐점 표기를 본 곳도 있으니 영업 여부 먼저 확인"], d:"숙성 사시미 2인(24p 이상), 우니·단새우·전복 플레이트, 한우 스키야키. 방이역 근처.", naver:"https://naver.me/FG7xbFlj", q:"조용 이자카야 송파"},
+  {n:"누나지트", p:"누나지트", k:131838669, st:"far", c:"이자카야", user:true, r:"네이버 방문자 리뷰 13", w:["unk"], d:"파스타 요리주점. 차돌 깻잎 파스타가 시그니처고 콜키지 프리. 강동구청역 쪽이라 제일 멀어.", naver:"https://naver.me/F6QCnoFA", q:"누나지트 강동"}
+];
+
+let st="all", cat="all", bangOnly=false;
+let picks=new Set();
+try{ picks=new Set(JSON.parse(localStorage.getItem("songpa-picks")||"[]")) }catch(e){}
+const save=()=>{ try{ localStorage.setItem("songpa-picks", JSON.stringify([...picks])) }catch(e){} };
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
+function btn(label, pressed, on){
+  const b=document.createElement("button"); b.type="button"; b.className="btn"; b.textContent=label;
+  b.setAttribute("aria-pressed", pressed); b.onclick=on; return b;
+}
+function renderControls(){
+  const s=document.getElementById("stations"); s.innerHTML="";
+  s.append(btn("전체", st==="all", ()=>{st="all";render()}));
+  STATIONS.forEach(x=>s.append(btn(x.name, st===x.id, ()=>{st=x.id;render()})));
+  const c=document.getElementById("cats"); c.innerHTML="";
+  c.append(btn("🐟 방어 있는 곳만", bangOnly, ()=>{bangOnly=!bangOnly;render()}));
+  c.append(btn("모든 종류", cat==="all", ()=>{cat="all";render()}));
+  CATS.forEach(x=>c.append(btn(x, cat===x, ()=>{cat=x;render()})));
+}
+function card(x){
+  const el=document.createElement("article"); el.className="card"+(picks.has(x.n)?" picked":"");
+  const tags=(x.gf?'<span class="tag gf">💛 가고 싶다던 곳</span>':'')+(x.bang?'<span class="tag b">🐟 방어</span>':'')+(x.user&&!x.gf?'<span class="tag u">📎 보내준 곳</span>':'');
+  const [lab,cls]=W[x.w[0]]; const wnote=x.w[1]?` · ${esc(x.w[1])}`:"";
+  const rs=x.r.split(" · ");
+  const photo=PHOTOS[x.p];
+  el.innerHTML=`<div class="ph">${photo?`<img loading="lazy" referrerpolicy="no-referrer" alt="${esc(x.n)} 사진" src="${photo}">`:'<div class="noimg">사진 없음</div>'}</div>
+    <div class="body">
+      <div class="name">${esc(x.n)}${tags}</div>
+      <div class="meta"><b>${esc(rs[0])}</b>${rs.length>1?" · "+esc(rs.slice(1).join(" · ")):""}</div>
+      <div class="wait ${cls}"><strong>${lab}</strong><span>${wnote.replace(/^ · /,"")}</span></div>
+      <div class="desc">${esc(x.d)}</div>
+      <div class="links">
+        <a class="link" href="${x.naver||NQ(x.q)}" target="_blank" rel="noopener">네이버 지도</a>
+        <a class="link" href="${K(x.k)}" target="_blank" rel="noopener">카카오맵</a>
+      </div>
+    </div>`;
+  const img=el.querySelector("img"); if(img) img.onerror=()=>{ img.parentElement.innerHTML='<div class="noimg">사진 없음</div>' };
+  const h=document.createElement("button"); h.type="button"; h.className="heart";
+  h.setAttribute("aria-pressed", picks.has(x.n)); h.setAttribute("aria-label", x.n+" 찜하기");
+  h.textContent=picks.has(x.n)?"♥ 찜":"♡ 찜";
+  h.onclick=()=>{ picks.has(x.n)?picks.delete(x.n):picks.add(x.n); save(); render(); };
+  el.querySelector(".ph").append(h); return el;
+}
+function render(){
+  renderControls();
+  const out=document.getElementById("out"); out.innerHTML=""; let any=false;
+  STATIONS.filter(s=>st==="all"||s.id===st).forEach(s=>{
+    const items=D.filter(x=>x.st===s.id&&(cat==="all"||x.c===cat)&&(!bangOnly||x.bang));
+    if(!items.length) return; any=true;
+    const sec=document.createElement("section"); sec.className="st";
+    sec.innerHTML=`<h2>${s.name} <small>${s.sub}</small></h2>`;
+    CATS.forEach(c=>{
+      const ci=items.filter(x=>x.c===c).sort((a,b)=>(b.gf?1:0)-(a.gf?1:0)||(b.user?1:0)-(a.user?1:0));
+      if(!ci.length) return;
+      const cd=document.createElement("div"); cd.className="cat"; cd.innerHTML=`<h3>${c}</h3>`;
+      const l=document.createElement("div"); l.className="list"; ci.forEach(x=>l.append(card(x))); cd.append(l); sec.append(cd);
+    });
+    out.append(sec);
+  });
+  if(!any) out.innerHTML='<p class="empty">조건에 맞는 곳이 없어. 필터를 바꿔봐!</p>';
+  document.getElementById("sum").textContent=picks.size?`찜 ${picks.size}곳: ${[...picks].join(", ")}`:"아직 찜한 곳 없음";
+  document.getElementById("copy").disabled=!picks.size;
+}
+document.getElementById("copy").onclick=async(e)=>{
+  const text="주말 저녁 찜 목록 🐟\n"+[...picks].map((n,i)=>{const x=D.find(d=>d.n===n);return `${i+1}. ${n} (${STATIONS.find(s=>s.id===x.st).name}, ${x.c})`}).join("\n");
+  try{ await navigator.clipboard.writeText(text); e.target.textContent="복사됨! 카톡에 붙여넣기"; setTimeout(()=>e.target.textContent="찜 목록 복사",2000); }
+  catch(err){ let t=document.getElementById("copybox"); if(!t){t=document.createElement("textarea");t.id="copybox";t.rows=5;document.querySelector(".bar .in").after(t);} t.value=text; t.select(); }
+};
+render();
+</script>
+</body>
+</html>
