@@ -310,7 +310,7 @@ function render(){
   document.getElementById("copy").disabled=!picks.size;
 }
 document.getElementById("copy").onclick=async(e)=>{
-  const text="주말 저녁 찜 목록 🐟\n"+[...picks].map((n,i)=>{const x=D.find(d=>d.n===n);return `${i+1}. ${n} (${STATIONS.find(s=>s.id===x.st).name}, ${x.c})`}).join("\n");
+  const text=[...picks].map(n=>{const x=D.find(d=>d.n===n);return x?`${n}\n\n* ${x.naver||NQ(x.q)}`:n}).join("\n\n\n");
   try{ await navigator.clipboard.writeText(text); e.target.textContent="복사됨! 카톡에 붙여넣기"; setTimeout(()=>e.target.textContent="찜 목록 복사",2000); }
   catch(err){ let t=document.getElementById("copybox"); if(!t){t=document.createElement("textarea");t.id="copybox";t.rows=5;document.querySelector(".bar .in").after(t);} t.value=text; t.select(); }
 };
